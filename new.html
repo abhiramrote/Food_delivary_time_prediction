@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<style>
+		/* Your CSS styles here */
+	</style>
+</head>
+<body>
+	<!-- Your HTML structure here -->
+
+	<!-- Add an ID to the form element to capture the submit event -->
+	<form id="deliveryForm">
+		<div class="input-block">
+			<div class="input-a">
+				<label class="lab" for="age">Age of Delivery Partner</label>
+				<input type="text" id="age" placeholder="Enter age">
+			</div>
+			<div class="input-b">
+				<label class="lab" for="ratings">Ratings of Previous Deliveries</label>
+				<input type="text" id="ratings" placeholder="Enter ratings">
+			</div>
+			<div class="input-c">
+				<label class="lab" for="distance">Total Distance</label>
+				<input type="text" id="distance" placeholder="Enter distance">
+			</div>
+		</div>
+		<div class="input-block">
+			<input type="submit" value="Submit">
+		</div>
+	</form>
+
+	<!-- Add a container to display the predicted delivery time -->
+	<div id="predictedDeliveryTime"></div>
+
+	<script>
+		document.getElementById('deliveryForm').addEventListener('submit', function(event) {
+			event.preventDefault(); // Prevent the default form submission
+
+			// Get the input values
+			const age = document.getElementById('age').value;
+			const ratings = document.getElementById('ratings').value;
+			const distance = document.getElementById('distance').value;
+
+			// Create an object with the input data
+			const formData = {
+				age: age,
+				ratings: ratings,
+				distance: distance
+			};
+
+			// Send a POST request to the backend API endpoint
+			fetch('http://127.0.0.1:5000/predict', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(formData)
+			})
+			.then(response => response.json())
+			.then(data => {
+				// Extract the predicted delivery time from the response
+				const predictedDeliveryTime = data.predicted_delivery_time;
+
+				// Update the frontend UI to display the predicted delivery time
+				const deliveryTimeElement = document.getElementById('predictedDeliveryTime');
+				deliveryTimeElement.innerHTML = `Predicted Delivery Time: ${predictedDeliveryTime} minutes`;
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+		});
+	</script>
+</body>
+</html>

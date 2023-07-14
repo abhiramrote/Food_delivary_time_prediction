@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<style>
+
+	  
+	
+	  .header{
+		position: relative;
+		text-align: center;
+		padding: 10px 10px;
+		margin: 50px 18px;
+	
+	  }
+	  body{
+		background-color: rgb(171, 138, 202);
+	  }
+	  .title{
+		position: relative;
+		height: 30px;
+		width: 50%;
+		text-align: center;
+		margin: 50px 25pc
+		;
+		
+		
+	  }
+	
+.input-block {
+	margin-bottom: 20px;
+  }
+  
+  .input-block label {
+	display: block;
+	margin-bottom: 5px;
+	font-weight: bold;
+  }
+  
+  .input-block input {
+	width: 100%;
+	padding: 12px;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	font-size: 16px;
+	transition: border-color 0.3s ease;
+  }
+  
+  .input-block input:focus {
+	border-color: #6c63ff;
+	outline: none;
+  }
+  
+  .input-block input::placeholder {
+	color: #aaa;
+  }
+  
+  .input-block input[type="submit"] {
+	background-color: #6c63ff;
+	color: #fff;
+	cursor: pointer;
+  }
+  
+  .input-block input[type="submit"]:hover {
+	background-color: #564dff;
+  }
+  input-block input[type="submit"] {
+	background-color: #6c63ff;
+	color: #fff;
+	cursor: pointer;
+	border: none;
+	padding: 10px 20px;
+	border-radius: 4px;
+	font-size: 16px;
+	transition: background-color 0.3s ease;
+  }
+  
+  .input-block input[type="submit"]:hover {
+	background-color: #564dff;
+	
+  }
+  #countdown-clock {
+	font-size: 24px;
+	font-weight: bold;
+  }
+  .image-block {
+	width: 700px;
+	height: 500px;
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 40px 32pc;
+	
+  }
+  
+  .image {
+	display: flex;
+	width: 100%;
+	height: 100%;
+  }
+  
+  
+	  
+</style>
+<script>
+	fetch('http://localhost:8000/predict', {
+		//...
+		
+	  })
+	  const form = document.querySelector('form');
+form.addEventListener('submit', function(event) {
+  event.preventDefault(); // Prevent the default form submission
+
+  // Get the input field values
+  const age = document.getElementById('ageInput').value;
+  const ratings = document.getElementById('ratingsInput').value;
+  const distance = document.getElementById('distanceInput').value;
+
+  // Create the request payload
+  const formData = {
+    age: age,
+    ratings: ratings,
+    distance: distance
+  };
+
+  // Send the POST request to the backend
+  fetch('http://localhost:8000/predict', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(formData)
+  })
+    .then(response => response.json())
+    .then(data => {
+      const predictedDeliveryTime = data.predicted_delivery_time;
+      // Update the frontend UI with the predicted delivery time
+      document.getElementById('predictedDeliveryTime').innerText = `Predicted Delivery Time: ${predictedDeliveryTime} minutes`;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+});
+
+	  
+	  
+// Set the target date and time for the countdown
+const targetDate = new Date('2023-12-31T23:59:59').getTime();
+
+// Update the countdown clock every second
+setInterval(updateCountdown, 100);
+
+function updateCountdown() {
+  // Get the current date and time
+  const currentDate = new Date().getTime();
+
+  // Calculate the time remaining in milliseconds
+  const timeRemaining = targetDate - currentDate;
+
+  // Calculate days, hours, minutes, and seconds from milliseconds
+  const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+
+  // Display the time remaining in the countdown clock element
+  const countdownClock = document.getElementById('countdown-clock');
+  countdownClock.textContent = `Time Left:  ${minutes}m ${seconds}s`;
+}
+
+const images = document.getElementsByClassName('image');
+let currentImageIndex = 0;
+
+function showNextImage() {
+  // Hide the current image
+  images[currentImageIndex].style.display = 'none';
+
+  // Move to the next image index
+  currentImageIndex = (currentImageIndex + 1) % images.length;
+
+  // Display the next image
+  images[currentImageIndex].style.display = 'block';
+}
+
+// Call the showNextImage function every 3 seconds (adjust the timing as needed)
+setInterval(showNextImage, 3000);
+
+
+// Change slide every 3 seconds (adjust the timing as needed)
+
+
+</script>
+<body>
+
+	<div class="header">
+		<h1 class="h1">Food Delivary Time Estimation</h1>
+	</div>
+	
+	<div class="image-block">
+		
+		  <img src="image1.jpg" alt="Image 1" class="image">
+		  <img src="image2.png" alt="Image 2" class="image">
+		  <img src="image3.jpg" alt="Image 3" class="image">
+		
+	  </div>
+	  
+	  <div class="title"">
+		<div class="input-block">
+		<div class="input-a">
+			<label class="lab" for="input-field">Age of Delivery Partner</label>
+			<input type="text" id="input-field" placeholder="Enter your input">
+		  </div>
+		  <div class="input-b">
+			<label class="lab"  for="input-field">Ratings of Previous Deliveries</label>
+			<input type="text" id="input-field" placeholder="Enter your input">
+		  </div>
+		  <div class="input-c">
+			<label class="lab" for="input-field">Total Distance</label>
+			<input type="text" id="input-field" placeholder="Enter your input">
+		  </div>
+		</div>
+		<div class="input-block">
+			
+			<input type="submit" value="Submit">
+		  </div>
+		  
+		  
+
+		  
+	<h3>Predicted Delivery Time </h3>
+
+	<div id="countdown-clock"></div>
+	<div id="predictedDeliveryTime"></div>
+<hr>
+	<div class="end">
+		<h2>Thanks for your patience !!!</h2>
+		<h3>Food is on the way</h3>
+	</div>
+</div>
+
+	  
+</body>
+</html>
